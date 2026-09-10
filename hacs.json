@@ -1,6 +1,5 @@
 {
-    "name": "Padavan Tracker",
+    "name": "Padavan-ng Tracker",
     "render_readme": true,
-    "domains": ["device_tracker"],
-    "iot_class": ["Local Polling"]
+    "homeassistant": "2024.10.0"
 }

@@ -1,10 +1,12 @@
 {
   "domain": "padavan_tracker",
-  "name": "Padavan Tracker",
-  "documentation": "https://github.com/PaulAnnekov/home-assistant-padavan-tracker",
-  "issue_tracker": "https://github.com/PaulAnnekov/home-assistant-padavan-tracker/issues",
-  "dependencies": [],
-  "codeowners": ["@PaulAnnekov"],
-  "version": "1.0.2",
-  "iot_class": "local_polling"
+  "name": "Padavan-ng Tracker",
+  "codeowners": ["@schtritoff"],
+  "config_flow": true,
+  "documentation": "https://github.com/schtritoff/home-assistant-padavan-tracker",
+  "integration_type": "hub",
+  "iot_class": "local_polling",
+  "issue_tracker": "https://github.com/schtritoff/home-assistant-padavan-tracker/issues",
+  "requirements": [],
+  "version": "3.2.0"
 }

@@ -1,0 +1,101 @@
+{
+  "entity": {
+    "sensor": {
+      "devices_connected": {
+        "name": "Connected devices"
+      },
+      "load_avg_1m": {
+        "name": "Load Avg (1m)"
+      },
+      "load_avg_5m": {
+        "name": "Load Avg (5m)"
+      },
+      "load_avg_15m": {
+        "name": "Load Avg (15m)"
+      },
+      "memory_usage": {
+        "name": "Memory usage"
+      },
+      "memory_used": {
+        "name": "Memory used"
+      },
+      "memory_free": {
+        "name": "Memory free"
+      },
+      "memory_total": {
+        "name": "Memory total"
+      },
+      "memory_cached": {
+        "name": "Memory cached"
+      },
+      "memory_buffers": {
+        "name": "Memory buffers"
+      },
+      "swap_used": {
+        "name": "Swap used"
+      },
+      "swap_total": {
+        "name": "Swap total"
+      },
+      "uptime": {
+        "name": "Uptime"
+      },
+      "last_boot": {
+        "name": "Last boot"
+      }
+    }
+  },
+  "config": {
+    "step": {
+      "user": {
+        "title": "Padavan-ng router",
+        "description": "Set up a padavan-ng router (padavan-ng firmware only; old Padavan 3.x is not supported). All currently connected clients will be tracked.",
+        "data": {
+          "host": "Router address (http://192.168.2.1/)",
+          "username": "Web interface user name",
+          "password": "Web interface user password",
+          "verify_ssl": "Verify TLS certificate (leave off if the router uses a self-signed certificate)"
+        }
+      },
+      "init": {
+        "title": "Padavan-ng tracker options",
+        "data": {
+          "scan_interval": "Scan interval (seconds, 5-3600; default 300)",
+          "consider_home": "Consider home (seconds after last seen before a device is not home; default 180)",
+          "track_unknown": "Track devices without a hostname",
+          "require_ip": "Require an IP address to track a device"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Failed to connect to the router.",
+      "invalid_auth": "Authentication with the router failed.",
+      "invalid_host": "The host address is not valid.",
+      "unknown": "Unexpected error."
+    },
+    "abort": {
+      "already_configured": "This router is already configured."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Padavan-ng tracker options",
+        "data": {
+          "scan_interval": "Scan interval (seconds, 5-3600; default 300)",
+          "consider_home": "Consider home (seconds after last seen before a device is not home; default 180)",
+          "track_unknown": "Track devices without a hostname",
+          "require_ip": "Require an IP address to track a device"
+        }
+      }
+    }
+  },
+  "exceptions": {
+    "invalid_auth": {
+      "message": "Authentication with the Padavan router failed."
+    },
+    "cannot_connect": {
+      "message": "Failed to connect to the Padavan router."
+    }
+  }
+}

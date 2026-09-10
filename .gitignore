@@ -1,0 +1,28 @@
+# Secrets
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Dev tooling
+.ruff_cache/
+.mypy_cache/
+.dev/output/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+_dev/_probe.txt
+_dev/ha_log.txt
+
+# dev-only reference copies
+_dev/asuswrt/
+_dev/*.zip
+_dev/_status*.html

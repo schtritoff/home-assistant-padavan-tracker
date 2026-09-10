@@ -1,75 +1,72 @@
-# Home Assistant Padavan Device Tracker
+# Home Assistant Padavan-ng Tracker
 
-[![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/hacs/integration)
+[![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/hacs/integration)
+[![hacs_badge](https://img.shields.io/badge/Validate-With_hassfest-blue.svg)](https://github.com/home-assistant/ops/scripts/hassfest)
 
-This device tracker component allows you to get **wireless** devices presence from 
-[Padavan](https://bitbucket.org/padavan/rt-n56u)-based routers.
+This custom device tracker integration shows **all connected LAN clients**
+(wired and wireless behind the router) of **[padavan-ng](https://gitlab.com/hadzhioglu/padavan-ng)**
+routers as `device_tracker` entities in Home Assistant.
 
-Devices support:
-- tested on Xiaomi MiWiFi Mini Router with Padavan 3.4.3.9-099_195eba6
-- [reported](https://github.com/PaulAnnekov/home-assistant-padavan-tracker/issues/11) working on Asus N56U Router with Padavan 3.4.3.9-099
+This integration targets **padavan-ng** (the maintained fork) only — the old
+Padavan firmware series (3.x "rt-n56u" on Bitbucket) is **not** supported: its
+webUI platform names and API surface differ.
 
-Probably need additional changes to make it work on other devices.
+Tested with padavan-ng (hadzhioglu fork) on a D-Link DIR-860L and
+Home Assistant 2026.8.
 
-Purpose
--------
+## Purpose
 
-Detect ANY Wi-Fi clients (=Android/iOS/Windows Phone smartphones...) with 100% accuracy at any time moment.
+Show one `device_tracker` entity per client the router currently sees
+(`/lan_clients.asp` client list), each grouped under a router device, so you
+can automate on presence of any device. Each tracked device gets a registry
+device entry with hostname/IP, and the tracker state carries hostname and IP
+attributes. Clients go "Not home" as soon as their client-list entry is no
+longer fresh (stale ARP entries are filtered out).
 
-Why not ...?
-------------
-  
-  - [Nmap](https://home-assistant.io/components/device_tracker.nmap_tracker/) - mobile devices (Nexus 5X, iPhones) can
-    go to a deep sleep so nmap can send dozen different packages and get nothing. It's very unreliable. You need at 
-    least 3 minutes to understand client is really offline and not ignoring your requests.
-  - [OpenWrt luci](https://home-assistant.io/components/device_tracker.luci/) - can't check, but from [source code](https://github.com/home-assistant/home-assistant/blob/dev/homeassistant/components/device_tracker/luci.py#L101)
-    it checks ARP table which is totally wrong, because it doesn't remove client immediately after disconnect.
-  - [OpenWrt ubus](https://home-assistant.io/components/device_tracker.ubus/) - looks promising, but doesn't exist in
-    Padavan firmware out of the box.
-  - [Xiaomi](https://home-assistant.io/components/device_tracker.xiaomi/) - works like this solution (=perfectly), 
-    but only in _router_ mode. Padavan tracker works in AP mode too.
+## Installation
 
-Installation (Xiaomi MiWiFi Mini Router only)
-------------------------------------------
+### HACS (custom repository)
 
-1. Download stock Xiaomi dev firmware http://www1.miwifi.com/miwifi_download.html.
-2. Flash it via web interface.
-3. Install Android app ([ru](https://4pda.ru/forum/index.php?showtopic=661224), 
-[en](http://xiaomi.eu/community/threads/xiaomi-router-app-translation.25386/page-3#post-262621)).
-4. Attach router to your Mi account.
-5. Download ssh unlock firmware http://d.miwifi.com/rom/ssh, remember login/pass - it's ssh credentials.
-6. Put it on USB FAT32 stick:
-   1. Turn on Router while reset-button pressed and USB stick plugged in
-   2. Release Reset-button after the orange LED starts flashing
-   3. Wait a minute to complete flashing and device is online again (shown by blue LED)
-7. Check SSH to your device.
-8. Go to http://prometheus.freize.net/index.html:
-   1. Download utility.
-   2. Build Toolchain.
-   3. Build Firmware.
-   4. Flash Firmware.
-   5. Flash EEPROM.
-9. Add the following lines to the `configuration.yaml`:
-   
-  ```yaml
-  device_tracker:
-    - platform: padavan_tracker
-      consider_home: 10
-      interval_seconds: 3
-      url: http://192.168.1.1/ # web interface url (don't forget about `/` in the end)
-      username: admin # Web interface user name
-      password: admin # Web interface user pass
-  ```  
+This integration is not in the HACS default store yet:
 
-Notes
------
+1. Open **HACS** in your Home Assistant sidebar.
+2. Click the **⋮ (three dot menu) → Custom repositories**.
+3. Paste `https://github.com/schtritoff/home-assistant-padavan-tracker`
+   and set the category to **Integration**.
+4. Click **Install** on *Padavan-ng Tracker*.
+5. Restart Home Assistant when HACS prompts you.
 
-- Sometimes/most of the time web interface will be inaccessible while this component is working. That's because Padavan firmware doesn't allow >1 users authorized from different IPs. Check the possible [workaround](https://github.com/PaulAnnekov/home-assistant-padavan-tracker/issues/8) for this.
+### Manual
 
+Copy `custom_components/padavan_tracker` into your Home Assistant
+`config/custom_components/` folder and restart HA.
 
-Useful links
--------------
- 
- - Firmware sources: https://bitbucket.org/padavan/rt-n56u
- - Firmware build and installation utility: http://prometheus.freize.net/index.html
- - OpenWrt wiki related to Xiaomi MiWiFi Mini: https://wiki.openwrt.org/toh/xiaomi/mini
+## Configuration (UI only)
+
+1. Go to **Settings → Devices & services → Add integration** and pick
+   **Padavan-ng Tracker**.
+2. Fill in the router web-interface address (e.g. `http://192.168.2.1/` or
+   `https://192.168.2.1/` if you enabled HTTPS), user name and password.
+   If the router uses a self-signed certificate, keep
+   **Verify TLS certificate** off.
+3. All currently connected clients are tracked automatically; new clients
+   appear as devices/entities when the router sees them.
+
+The following can be changed in the integration's **Configure** dialog:
+
+- **Scan interval** (default 300 s, 5-3600)
+- **Consider home** (seconds after last seen before a device becomes "Not home";
+  default 180 s)
+- **Track devices without a hostname**
+- **Require an IP address to track a device**
+
+## Why not ...?
+
+- [Nmap tracker](https://www.home-assistant.io/integrations/nmap_tracker/) -
+  sleeping devices ignore ARP/pings for minutes, unreliable for phones.
+- [Xiaomi tracker](https://www.home-assistant.io/integrations/xiaomi_miio/) -
+  similar accuracy, but router-mode only.
+
+## Useful links
+
+- Firmware: https://gitlab.com/hadzhioglu/padavan-ng
